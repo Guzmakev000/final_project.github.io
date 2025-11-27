@@ -1,0 +1,167 @@
+---
+output: 
+  html_document:
+    toc: TRUE
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    theme: flatly
+    highlight: tango
+    df_print: paged
+    css: style2.css
+---
+
+<div class="casefile-wrapper">
+
+  <div class="blood-stamp">CONFIDENTIAL CASE FILE</div>
+  
+  <a href="index.html" class="casefile-button">📁 Return to the Front</a>
+
+  <h1 class="casefile-title">About the Crime Scene</h1>
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+#Loading libraries needed for this section 
+library(tidyverse)
+library(janitor)
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+# Loading the data 
+cancer <- read_csv("data/cancer_data.csv") %>% 
+  janitor::clean_names() %>% 
+  mutate(across(where(is.character), as.factor)) %>% 
+  #Reordering some variables 
+    mutate(
+      #race White =1, Black =2, Other=3
+      race = factor(race, levels = c("White", "Black", "Other")),
+      #marital status: Single =1, Married =2, Separated =3, Divorced = 4, Widowed =5
+      marital_status = factor(marital_status, levels = c("Single", "Married", "Separated", "Divorced", "Widowed")),
+      #differentiate: Well differentiated =1, Moderately differentiated =2, Poorly differentiated =3, Undifferentiated =4
+      differentiate = factor(differentiate, levels = c("Well differentiated", "Moderately differentiated", "Poorly differentiated", "Undifferentiated")),
+      #a_stage: Regional =1, Distant =2
+      a_stage = factor(a_stage, levels = c("Regional", "Distant"))
+    )
+# Checking for missing data 
+colSums(is.na(cancer)) #there are no missing data
+
+# Saving data as cancer_clean into files folder 
+write_csv(cancer, "data/cancer_clean.csv")
+```
+
+### Understanding the Crime Scene
+The crime scene is where the evidence is found. In this case, the crime scene is the biological and clinical data collected from patients diagnosed with breast cancer. This data includes various features such as tumor size, lymph node involvement, hormone receptor status, and patient demographics. These features help us understand the nature of the crime committed by breast cancer and provide insights into its behavior
+
+#### Age of the typical victim
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=5, fig.height=4}
+# Visualizing the age distribution
+cancer %>%
+  ggplot(aes(x = age)) +
+  geom_histogram(binwidth = 5, fill = "lightblue", color = "black") +
+  labs(title = "Age Distribution of Affected Victim",
+       x = "Age",
+       y = "Count") +
+  theme_minimal()
+```
+
+Our defendant likes to effect people of various ages, but it seems to have a preference for `r quantile(cancer$age, 0.25)` to `r quantile(cancer$age, 0.75)` years old.
+
+### How long do people survive after being attacked?
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=5, fig.height=4}
+p_surv_hist <- cancer %>% 
+  ggplot(aes(x = survival_months, fill = status)) +
+  geom_histogram(binwidth = 10, alpha = 0.7, color = "white") +
+  labs(
+    title = "Distribution of Survival Time",
+    x = "Months",
+    y = "Frequency"
+  ) +
+  theme_minimal() 
+
+p_surv_hist
+```
+
+The histogram above shows the distribution of survival times for victims after being diagnosed with breast cancer. The defendant's impact varies widely, with some victims surviving for many months while others succumb more quickly. This variability highlights the complexity of the crime committed by breast cancer.
+
+### How Early Does the Defendant Strike?
+
+To understand how early breast cancer presents, we first examine the **distribution of cancer stage at diagnosis**. Earlier stages indicate early detection, while advanced stages reveal delayed discovery—giving our criminal, Breast Cancer, more time to commit harm.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+cancer %>%
+  count(n_stage) %>%
+  ggplot(aes(x = n_stage, y = n, fill = n_stage)) +
+  geom_col(color = "black") +
+  labs(
+    title = "Stage at Diagnosis: How Early Is Cancer Caught?",
+    x = "Cancer Stage",
+    y = "Number of Patients"
+  ) +
+  scale_fill_brewer(palette = "Reds") +
+  theme_minimal() +
+  theme(legend.position="none")
+
+cancer %>%
+  count(t_stage) %>%
+  ggplot(aes(x = t_stage, y = n, fill = t_stage)) +
+  geom_col(color = "black") +
+  labs(
+    title = "Stage at Diagnosis: How Early Is Cancer Caught?",
+    x = "Cancer Stage",
+    y = "Number of Patients"
+  ) +
+  scale_fill_brewer(palette = "Reds") +
+  theme_minimal() +
+  theme(legend.position="none")
+
+```
+
+Most victims are found at stage `r names(sort(table(cancer$n_stage), decreasing=TRUE))[1]`, suggesting that breast cancer often can be detected early. However, a significant number of cases are diagnosed at later stages, indicating that the defendant can sometimes evade early detection. It is crucial to also see that the tumor size (T stage) shows a similar pattern, with many cases being diagnosed at smaller size. 
+
+Now we investigate how long victims survive after their diagnosis depending on number of nodes involved. Boxplots help visualize survival time differences clearly.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=6, fig.height=4}
+cancer %>%
+  ggplot(aes(x = n_stage, y = survival_months, fill = n_stage)) +
+  geom_boxplot(alpha = 0.7, color = "black") +
+  labs(
+    title = "Survival Months by Stage of Cancer",
+    x = "Stage at Diagnosis",
+    y = "Survival (Months)") +
+  scale_fill_brewer(palette = "Purples") +
+  theme_minimal() +
+  theme(legend.position="none")
+
+```
+
+The boxplots reveal that victims diagnosed at earlier stages (e.g., N1) tend to survive longer than those diagnosed at advanced stages (e.g., N3). This pattern underscores the critical importance of early detection of the defendant to improve survival outcomes.
+
+### Survival by estrogen and progesterone receptor status
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=6, fig.height=4}
+cancer %>%
+  ggplot(aes(x = estrogen_status, y = survival_months, fill = estrogen_status)) +
+  geom_boxplot(alpha = 0.7, color = "black") +
+  labs(
+    title = "Survival Months by Estrogen Receptor Status",
+    x = "Estrogen Receptor Status",
+    y = "Survival (Months)") +
+  scale_fill_brewer(palette = "Greens") +
+  theme_minimal() +
+  theme(legend.position="none")
+
+cancer %>%
+  ggplot(aes(x = progesterone_status, y = survival_months, fill = progesterone_status)) +
+  geom_boxplot(alpha = 0.7, color = "black") +
+  labs(
+    title = "Survival Months by Progesterone Receptor Status",
+    x = "Progesterone Receptor Status",
+    y = "Survival (Months)") +
+  scale_fill_brewer(palette = "Oranges") +
+  theme_minimal() +
+  theme(legend.position="none")
+
+```
+
+Other features like estrogen and progesterone receptor status also influence survival. Victims with positive receptor status tend to have longer survival times, indicating that the defendant's behavior may vary based on these biological markers.
+

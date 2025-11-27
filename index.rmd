@@ -1,0 +1,52 @@
+---
+output: 
+  html_document:
+    toc: false
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    theme: flatly
+    highlight: tango
+    df_print: paged
+    css: style.css
+---
+
+<div class="casefile-wrapper">
+
+  <div class="blood-stamp">CONFIDENTIAL CASE FILE</div>
+
+  <h1 class="casefile-title">Breast Cancer v. the People of P8105</h1>
+  <h2 class="casefile-subtitle">Greed, Deception, Death — Guilty Until Proven Otherwise</h2>
+
+  <p class="casefile-lede">
+    The defendent: <strong>Breast Cancer</strong>.  
+    The prosecutors: <strong>Kevin Guzman, Alexandria Taylor, Eric Xu, Edmund Wong, Jiseung Lee</strong>.
+    
+    Charges: <strong>uncontrolled growth</strong>, <strong>silent invasion</strong>, <strong> and avoidable loss of life</strong>.  
+    We serve as the data-driven prosecution. It is our job they don't get away with it.
+  </p>
+
+  <p class="casefile-lede">
+    Using forensic analytics (biological signals, clinical clues, and survival records we reconstruct the crime scene). 
+    Is the evidence strong enough to convict, or does reasonable doubt remain?
+  </p>
+  
+  <p class="casefile-lede">
+    Explore the evidence below to examine the case against breast cancer. 
+    Review the data, the analysis, and the findings. 
+    Then decide for yourself: Is breast cancer guilty as charged?
+  </p>
+  
+   <p class="casefile-lede">
+    Click the folders below to explore each section of the case file.
+  </p>
+
+
+  <a href="prosecutors.html" class="casefile-button">📁 About the Prosecutors</a> <a href="defendant.html" class="casefile-button">📁 About the Defendant</a> <a href="evidence.html" class="casefile-button">📁 Evidence Source</a> <a href="crime_scene.html" class="casefile-button">📁 Exploring the Crime Scene</a> <a href="evidence_against.html" class="casefile-button">📁 Evidence Against</a> <a href="closing.html" class="casefile-button">📁 Closing Statement</a> <a href="crime_report.html" class="casefile-button">📁 Crime Report</a> 
+  
+  <h2 class="casefile-subtitle">When you are ready, deliberate here: </h2> <a href="https://take.supersurvey.com/QJL4C2OXG" class="casefile-button">📁 Deliberate Here</a>
+
+
+</div>
+
+---
